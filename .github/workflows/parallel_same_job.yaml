@@ -1,0 +1,36 @@
+name: Maven Parallel Tests Same Job
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test_type: [unit, integration]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build code
+        run: mvn clean install -DskipTests
+
+      - name: Run ${{ matrix.test_type }} tests
+        run: |
+          if [ "${{ matrix.test_type }}" = "unit" ]; then
+            mvn -B test -DskipIntegrationTests=true
+          else
+            mvn -B verify -DskipUnitTests=true
+          fi
+
