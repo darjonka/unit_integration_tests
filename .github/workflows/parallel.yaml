@@ -23,12 +23,16 @@ jobs:
     needs: [setup, checkout]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
       - name: Run unit tests
         run: pwd;mvn clean test
   run_integration_tests:
     needs: [setup, checkout]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
       - name: Run integration tests
         run: pwd;mvn clean verify
   summary:
